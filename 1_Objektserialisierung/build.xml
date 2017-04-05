@@ -3,7 +3,9 @@
 <project name="Objektserialisierung" default="compile">
 
   <path id="project.class.path">
-
+    <pathelement path="${java.class.path}" />
+    <pathelement location="lib/flexjson-2.1.jar" />
+    <pathelement location="build" />
   </path>
   
   <target name="init" >
@@ -15,7 +17,7 @@
   </target>
 
   <target name="execute" depends="compile">
-    <java classname="BookClient" classpath="build" />
+    <java classname="BookClient" classpathref="project.class.path" />
   </target>
 
   <target name="clean" depends="init">
