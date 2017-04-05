@@ -1,13 +1,23 @@
 import java.util.Scanner;
 
 import java.io.File;
+import java.io.ObjectOutputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class BookClient {
 
     // TODO: declare book container
     static Scanner scanner = new Scanner(System.in);
 
-    public static File bookFile = new File("../data/server.txt");
+    public static File bookFile = new File("data/server.binary");
+
+    public static List<Book> content = new LinkedList<Book>();
 
     public static void main(String[] args) {
 	int input = -1;
@@ -41,23 +51,56 @@ public class BookClient {
     }
 
     public static void loadBooks(File server) {
-	// TODO
+	try(ObjectInputStream oos = new ObjectInputStream(new FileInputStream(server))){
+		content = (LinkedList<Book>)oos.readObject();
+	    } catch (IOException | ClassNotFoundException e) {
+	    e.printStackTrace();
+	}
     }
 
     public static void showBooks() {
-	// TODO
+	for (Book b: content) {
+	    System.out.println(b);
+	}
     }
 
     public static void addBook() {
-	// TODO
+	Scanner sc = new Scanner(System.in);
+	System.out.println("Please enter the ISBN: ");
+	String isbn = sc.nextLine();
+	System.out.println("Please enter the forename of the author: ");
+	String author_forename = sc.nextLine();
+	System.out.println("Please enter the surename of the author: ");
+	String author_surename = sc.nextLine();
+	System.out.println("Please enter the title of the book: ");
+	String title = sc.nextLine();
+	content.add(new Book(isbn, new Author(author_forename, author_surename),
+			     title));
+	sc.close();
     }
 
     public static void deleteBook() {
-	// TODO
+	Scanner sc = new Scanner(System.in);
+	System.out.println("Please enter the ISBN: ");
+	String isbn = sc.nextLine();
+
+	//search for the book
+	for(int i=0; i<content.size(); i++) {
+	    if(content.get(i).getIsbn().equals(isbn)) {
+		content.remove(i);
+	    }
+	}
     }
 
     public static void saveBooks(File server) {
-	// TODO
+	try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(server))){
+		oos.writeObject(content);
+		oos.flush();
+		oos.close();
+
+	    } catch (IOException e) {
+
+	}
     }
 
 }

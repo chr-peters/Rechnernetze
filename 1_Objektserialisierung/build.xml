@@ -10,7 +10,7 @@
   </target>
 
   <target name="execute" depends="compile">
-    <java classname="Main" classpath="build" />
+    <java classname="BookClient" classpath="build" />
   </target>
 
   <target name="clean" depends="init">
