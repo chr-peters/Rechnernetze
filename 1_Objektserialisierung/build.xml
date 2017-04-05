@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <project name="Objektserialisierung" default="compile">
+
+  <path id="project.class.path">
+
+  </path>
+  
   <target name="init" >
     <mkdir dir="build" />
   </target>
