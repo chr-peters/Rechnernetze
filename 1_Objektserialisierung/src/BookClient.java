@@ -1,9 +1,13 @@
 import java.util.Scanner;
 
+import java.io.File;
+
 public class BookClient {
 
     // TODO: declare book container
-    static Scanner scanner = new Scanner(System.in); 
+    static Scanner scanner = new Scanner(System.in);
+
+    public static File bookFile = new File("../data/server.txt");
 
     public static void main(String[] args) {
 	int input = -1;

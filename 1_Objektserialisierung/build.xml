@@ -2,15 +2,15 @@
 
 <project name="Objektserialisierung" default="compile">
   <target name="init" >
-    <mkdir dir="build/classes" />
+    <mkdir dir="build" />
   </target>
 
   <target name="compile" depends="init" >
-    <javac srcdir="src" destdir="build/classes" includeAntRuntime="false" />
+    <javac srcdir="src" destdir="build" includeAntRuntime="false" />
   </target>
 
   <target name="execute" depends="compile">
-    <java classname="Main" classpath="build/classes" />
+    <java classname="Main" classpath="build" />
   </target>
 
   <target name="clean" depends="init">
