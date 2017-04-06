@@ -6,16 +6,21 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.FileWriter;
+import java.io.FileReader;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import flexjson.JSONSerializer;
+import flexjson.JSONDeserializer;
 
 public class BookClient {
 
     // TODO: declare book container
     static Scanner scanner = new Scanner(System.in);
 
-    public static File bookFile = new File("data/server.binary");
+    public static File bookFile = new File("data/server.json");
 
     public static List<Book> content = new LinkedList<Book>();
 
@@ -51,9 +56,9 @@ public class BookClient {
     }
 
     public static void loadBooks(File server) {
-	try(ObjectInputStream oos = new ObjectInputStream(new FileInputStream(server))){
-		content = (LinkedList<Book>)oos.readObject();
-	    } catch (IOException | ClassNotFoundException e) {
+	try(FileReader fr = new FileReader(server)){
+		content = new JSONDeserializer<List<Book>>().deserialize(fr);
+	    } catch (IOException e) {
 	    e.printStackTrace();
 	}
     }
@@ -93,11 +98,8 @@ public class BookClient {
     }
 
     public static void saveBooks(File server) {
-	try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(server))){
-		oos.writeObject(content);
-		oos.flush();
-		oos.close();
-
+	try(FileWriter fw = new FileWriter(server)){
+		new JSONSerializer().serialize(content, fw);
 	    } catch (IOException e) {
 
 	}

@@ -11,6 +11,11 @@ public class Book implements Serializable{
 	this.title = title;
     }
 
+    /**For deserialization purposes */
+    public Book() {
+
+    }
+
     public String getIsbn() {
 	return isbn;
     }

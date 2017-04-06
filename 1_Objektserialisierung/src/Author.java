@@ -9,6 +9,11 @@ public class Author implements Serializable {
 	this.surename = surename;
     }
 
+    /**For deserialization purposes */
+    public Author() {
+
+    }
+
     public String getForename() {
 	return forename;
     }

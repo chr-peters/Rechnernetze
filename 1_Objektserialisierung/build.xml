@@ -13,7 +13,7 @@
   </target>
 
   <target name="compile" depends="init" >
-    <javac srcdir="src" destdir="build" includeAntRuntime="false" />
+    <javac srcdir="src" destdir="build" includeAntRuntime="false" classpathref="project.class.path"/>
   </target>
 
   <target name="execute" depends="compile">
