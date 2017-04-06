@@ -12,7 +12,6 @@ import java.util.List;
 
 public class BookClient {
 
-    // TODO: declare book container
     static Scanner scanner = new Scanner(System.in);
 
     public static File bookFile = new File("data/server.binary");
@@ -65,24 +64,21 @@ public class BookClient {
     }
 
     public static void addBook() {
-	Scanner sc = new Scanner(System.in);
 	System.out.println("Please enter the ISBN: ");
-	String isbn = sc.nextLine();
+	String isbn = scanner.nextLine();
 	System.out.println("Please enter the forename of the author: ");
-	String author_forename = sc.nextLine();
+	String author_forename = scanner.nextLine();
 	System.out.println("Please enter the surename of the author: ");
-	String author_surename = sc.nextLine();
+	String author_surename = scanner.nextLine();
 	System.out.println("Please enter the title of the book: ");
-	String title = sc.nextLine();
+	String title = scanner.nextLine();
 	content.add(new Book(isbn, new Author(author_forename, author_surename),
 			     title));
-	sc.close();
     }
 
     public static void deleteBook() {
-	Scanner sc = new Scanner(System.in);
 	System.out.println("Please enter the ISBN: ");
-	String isbn = sc.nextLine();
+	String isbn = scanner.nextLine();
 
 	//search for the book
 	for(int i=0; i<content.size(); i++) {
