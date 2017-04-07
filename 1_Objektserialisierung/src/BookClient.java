@@ -34,6 +34,8 @@ public class BookClient {
 	    System.out.println(" (4) Delete Book");
 	    System.out.println(" (5) Save books in file");
 	    input = scanner.nextInt();
+	    //consume end-of-line character
+	    scanner.nextLine();
 	    switch (input) {
 	    case 1:
 		loadBooks(bookFile);
