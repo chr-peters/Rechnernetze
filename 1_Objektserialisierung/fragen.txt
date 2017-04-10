@@ -1,0 +1,9 @@
+Worauf muss bei der Interoperabilitaet geachtet werden?
+[x] Ob der Autor in einer eigenen Klasse realisiert wird
+[x] Datentyp des Buchcontainers
+[x] Werden die einzelnen Buecher serialisiert oder der Container
+[ ] Die Reihenfolge der Attribute
+    	- Wenn die Namen uebereinstimmen, werden die Attribute trotz
+	  abweichender Reihenfolge richtig gelesen
+[x] Der Name der Klassenattribute
+    	- Ist zumindest wichtig, wenn die Reihenfolge nicht uebereinstimmt
