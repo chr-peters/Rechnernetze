@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<project name="Objektserialisierung" default="compile">
+  <target name="init" >
+    <mkdir dir="build" />
+  </target>
+
+  <target name="compile" depends="init" >
+    <javac srcdir="src" destdir="build" includeAntRuntime="false" />
+  </target>
+
+  <target name="execute" depends="compile">
+    <java classname="BookClient" classpath="build" />
+  </target>
+
+  <target name="clean" depends="init">
+    <delete dir="build" />
+  </target>
+</project>
