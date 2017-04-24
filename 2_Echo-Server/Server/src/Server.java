@@ -48,6 +48,15 @@ public class Server {
 
     }
 
+    //clean up all terminated connections
+    public void cleanup() {
+	for(Connection c: this.connections) {
+	    if(!c.isRunning()) {
+		this.connections.remove(c);
+	    }
+	}
+    }
+
     public Map<String, Statistik> getAllStats() {
 	Map<String, Statistik> res = new HashMap();
 	for (Connection c: this.connections) {

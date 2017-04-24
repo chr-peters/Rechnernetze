@@ -33,8 +33,11 @@ public class ServerListener extends Thread {
 	}
     }
 
-    public void processReceivedMessage(String message) {
+    public void processReceivedMessage(String message) throws IOException{
 	System.out.println("Message from Server: "+message);
+	if (message.endsWith("\\exit")) {
+	    this.client.disconnect();
+	}
     }
 
 }

@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class Connection extends Thread{
     private Socket clientSocket;
-    private boolean isRunning;
+    private boolean running;
     private Statistik stats;
 
     private BufferedReader inFromClient;
@@ -16,7 +16,7 @@ public class Connection extends Thread{
 
     public Connection(Socket client) throws IOException{
 	this.clientSocket = client;
-	this.isRunning = true;
+	this.running = true;
 
 	inFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 	outToClient = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
@@ -29,6 +29,17 @@ public class Connection extends Thread{
 	outToClient.flush();
     }
 
+    public void close() throws IOException{
+	this.running = false;
+	this.inFromClient.close();
+	this.outToClient.close();
+	Server.getInstance().cleanup();
+    }
+
+    public boolean isRunning() {
+	return this.running;
+    }
+
     public void processMessage(String message) throws IOException{
 	if(message.charAt(0) == '\\'){
 	    if (message.equals("\\showstat")){
@@ -36,6 +47,9 @@ public class Connection extends Thread{
 	    } else if(message.equals("\\showallstat")){
 		Map<String, Statistik> statmap = Server.getInstance().getAllStats();
 		this.sendToClient(statmap.toString()+'\n');
+	    } else if(message.endsWith("\\exit")) {
+		this.sendToClient(message + '\n');
+		this.close();
 	    }
 	} else {
 	    this.sendToClient(message + '\n');
@@ -47,7 +61,7 @@ public class Connection extends Thread{
 	try {
 	    //send welcome message
 	    this.sendToClient("Welcome to the echo-server!" + '\n');
-	    while(this.isRunning){
+	    while(this.running){
 		String clientMessage = inFromClient.readLine();
 		if(clientMessage != null) {
 		    this.stats.addMessage(clientMessage);
@@ -57,7 +71,7 @@ public class Connection extends Thread{
 	} catch (IOException e) {
 	    System.err.println("Could not send message to " + clientSocket.getInetAddress() + ':' + clientSocket.getPort() + ". Ended connection.");
 	    e.printStackTrace();
-	    this.isRunning = false;
+	    this.running = false;
 	}
     }
 
