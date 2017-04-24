@@ -2,6 +2,8 @@ import java.net.Socket;
 
 import java.io.*;
 
+import java.util.Map;
+
 //TODO clean up unused imports
 
 public class Connection extends Thread{
@@ -31,6 +33,9 @@ public class Connection extends Thread{
 	if(message.charAt(0) == '\\'){
 	    if (message.equals("\\showstat")){
 		this.sendToClient(this.stats.toString()+'\n');
+	    } else if(message.equals("\\showallstat")){
+		Map<String, Statistik> statmap = Server.getInstance().getAllStats();
+		this.sendToClient(statmap.toString()+'\n');
 	    }
 	} else {
 	    this.sendToClient(message + '\n');
