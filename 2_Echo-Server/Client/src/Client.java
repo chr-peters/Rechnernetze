@@ -4,8 +4,9 @@ import java.net.UnknownHostException;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
+
+//TODO clean up imports
 
 public class Client {
 
@@ -13,23 +14,21 @@ public class Client {
     private Socket serverSocket;
     private AtomicBoolean running;
 
+    private BufferedWriter outToServer;
+
     public Client(String address, int port) throws IOException{
 	this.serverSocket = new Socket(address, port);
 	this.serverListener = new ServerListener(this.serverSocket, this);
+
+	outToServer = new BufferedWriter(new OutputStreamWriter(serverSocket.getOutputStream()));
+	
 	this.running = new AtomicBoolean(true);
 	this.serverListener.start();
     }
 
-    public void sendToServer(String message) {
-	if ( this.isRunning() ) {
-	    try {
-		DataOutputStream outToServer = new DataOutputStream(serverSocket.getOutputStream());
-		outToServer.writeUTF(message);
-		outToServer.close();
-	    } catch (IOException e) {
-		System.err.println("Could not send message to server.");
-	    }
-	}
+    public void sendToServer(String message) throws IOException{
+	outToServer.write(message);
+	outToServer.flush();
     }
 
     public void disconnect() throws IOException {
@@ -53,14 +52,15 @@ public class Client {
 	    System.err.println("Could not connect to server.");
 	    return;
 	}
-	Scanner sc = new Scanner(System.in);
-	while( client.isRunning() ) {
-	    System.out.println("Please enter a message you want to send to the server.");
-	    String message = sc.nextLine();
-	    client.sendToServer(message + '\n');
+	try (Scanner sc = new Scanner(System.in)) {
+	    while( client.isRunning() ) {
+		System.out.println("Please enter a message you want to send to the server.");
+		String message = sc.nextLine();
+		client.sendToServer(message + '\n');
+	    }
+	} catch (Exception e) {
+	    System.err.println("Could not send message to server. Shutting down client.");
 	}
-	System.out.println("The client has been shut down.");
-	sc.close();
     }
 
 }

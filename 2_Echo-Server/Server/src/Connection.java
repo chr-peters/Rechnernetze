@@ -1,22 +1,40 @@
 import java.net.Socket;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+
+import java.io.*;
+
+//TODO clean up unused imports
 
 public class Connection extends Thread{
     private Socket clientSocket;
     private boolean isRunning;
     private Statistik stats;
 
-    public Connection(Socket client) {
+    private BufferedReader inFromClient;
+    private BufferedWriter outToClient;
+
+    public Connection(Socket client) throws IOException{
 	this.clientSocket = client;
 	this.isRunning = true;
+
+	inFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+	outToClient = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+
+	stats = new Statistik();
     }
 
     public void sendToClient(String message) throws IOException{
-	DataOutputStream outToClient = new DataOutputStream(clientSocket.getOutputStream());
-	outToClient.writeUTF(message);
-	outToClient.close();
+	outToClient.write(message);
+	outToClient.flush();
+    }
+
+    public void processMessage(String message) throws IOException{
+	if(message.charAt(0) == '\\'){
+	    if (message.equals("\\showstat")){
+		this.sendToClient(this.stats.toString()+'\n');
+	    }
+	} else {
+	    this.sendToClient(message + '\n');
+	}
     }
 
     @Override
@@ -25,19 +43,24 @@ public class Connection extends Thread{
 	    //send welcome message
 	    this.sendToClient("Welcome to the echo-server!" + '\n');
 	    while(this.isRunning){
-		DataInputStream inFromClient = new DataInputStream(clientSocket.getInputStream());
-		String clientMessage = inFromClient.readUTF();
-		//echo back the message
-		this.sendToClient(clientMessage + '\n');
-		inFromClient.close();
+		String clientMessage = inFromClient.readLine();
+		if(clientMessage != null) {
+		    this.stats.addMessage(clientMessage);
+		    this.processMessage(clientMessage);
+		}
 	    }
 	} catch (IOException e) {
 	    System.err.println("Could not send message to " + clientSocket.getInetAddress() + ':' + clientSocket.getPort() + ". Ended connection.");
+	    e.printStackTrace();
 	    this.isRunning = false;
 	}
     }
 
     public Statistik getStats() {
 	return this.stats;
+    }
+
+    public String toString(){
+	return clientSocket.toString();
     }
 }

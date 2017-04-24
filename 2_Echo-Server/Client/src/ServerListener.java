@@ -1,34 +1,40 @@
 import java.net.Socket;
 
-import java.io.DataInputStream;
-import java.io.IOException;
+import java.io.*;
+
+//TODO clean up unused imports
 
 public class ServerListener extends Thread {
 
     private Socket serverSocket;
     private Client client;
 
-    public ServerListener(Socket socket, Client client) {
+    private BufferedReader inFromServer;
+
+    public ServerListener(Socket socket, Client client) throws IOException {
 	this.serverSocket = socket;
 	this.client = client;
+
+	inFromServer = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
     }
 
     @Override
     public void run () {
-	while ( this.client.isRunning() ) {
-	    try {
-		DataInputStream inFromServer = new DataInputStream(serverSocket.getInputStream());
-		String message = inFromServer.readUTF();
-		this.processReceivedMessage(message);
-		inFromServer.close();
-	    } catch (IOException e) {
-		System.err.println("Could not retrieve message from server.");
+	try {
+	    while ( this.client.isRunning() ) {
+		String message = inFromServer.readLine();
+		if (message != null) {
+		    this.processReceivedMessage(message);
+		}
 	    }
+	} catch (IOException e) {
+	    System.err.println("Could not retrieve message from server.");
+	    e.printStackTrace();
 	}
     }
 
     public void processReceivedMessage(String message) {
-	System.out.println(message);
+	System.out.println("Message from Server: "+message);
     }
 
 }

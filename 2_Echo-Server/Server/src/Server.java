@@ -1,6 +1,8 @@
 import java.util.Scanner;
 import java.util.List;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.HashMap;
 
 import java.io.IOException;
 
@@ -31,7 +33,7 @@ public class Server {
 			conn.start();
 			connections.add(conn);
 		    } catch (IOException e) {
-
+			e.printStackTrace();
 		    }
 		}
 	    }
@@ -46,7 +48,13 @@ public class Server {
 
     }
 
-    //TODO show all stats
+    public Map<String, Statistik> getAllStats() {
+	Map<String, Statistik> res = new HashMap();
+	for (Connection c: this.connections) {
+	    res.put(c.toString(), c.getStats());
+	}
+	return res;
+    }
 
     public static Server getInstance(int port) throws IOException {
 	if (instance == null) {
