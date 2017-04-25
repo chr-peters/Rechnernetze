@@ -25,7 +25,7 @@ public class Connection extends Thread{
     }
 
     public void sendToClient(String message) throws IOException{
-	outToClient.write(message);
+	outToClient.write("IP = "+clientSocket.getInetAddress()+", Port = "+clientSocket.getPort()+"\n"+message+'\n');
 	outToClient.flush();
     }
 
@@ -41,18 +41,19 @@ public class Connection extends Thread{
     }
 
     public void processMessage(String message) throws IOException{
-	if(message.charAt(0) == '\\'){
-	    if (message.equals("\\showstat")){
-		this.sendToClient(this.stats.toString()+'\n');
-	    } else if(message.equals("\\showallstat")){
-		Map<String, Statistik> statmap = Server.getInstance().getAllStats();
-		this.sendToClient(statmap.toString()+'\n');
-	    } else if(message.endsWith("\\exit")) {
-		this.sendToClient(message + '\n');
-		this.close();
-	    }
+	message.trim();
+	if (message.equals("\\showstat")){
+	    this.sendToClient(this.stats.toString());
+	} else if(message.equals("\\showallstat")){
+	    Map<String, Statistik> statmap = Server.getInstance().getAllStats();
+	    this.sendToClient(statmap.toString());
+	} else if(message.endsWith("\\exit")) {
+	    this.sendToClient(message);
+	    this.close();
+	} else if(message.startsWith("/broadc")){
+	    Server.getInstance().broadcast(message.replaceFirst("/broadc", "").trim());
 	} else {
-	    this.sendToClient(message + '\n');
+	    this.sendToClient(message);
 	}
     }
 
@@ -60,7 +61,7 @@ public class Connection extends Thread{
     public void run() {
 	try {
 	    //send welcome message
-	    this.sendToClient("Welcome to the echo-server!" + '\n');
+	    this.sendToClient("Welcome to the echo-server!");
 	    while(this.running){
 		String clientMessage = inFromClient.readLine();
 		if(clientMessage != null) {

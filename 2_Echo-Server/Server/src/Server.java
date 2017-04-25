@@ -41,7 +41,13 @@ public class Server {
     }
 
     public void broadcast(String message) {
-
+	for(Connection c: this.connections) {
+	    try {
+		c.sendToClient(message);
+	    } catch (IOException e) {
+		e.printStackTrace();
+	    }
+	}
     }
 
     public void stop() {
@@ -83,14 +89,18 @@ public class Server {
 	}
     }
 
+    public String getInetAddress(){
+	return serverSocket.getInetAddress().getHostAddress();
+    }
+
     public static void main(String [] args) {
 	try {
 	    int port = STANDARD_PORT;
 	    if (args.length > 0) {
 		port = Integer.parseInt(args[0]);
 	    }
-	    instance = Server.getInstance(port);
-	    System.out.println("Started Server running on port "+port+".");
+	    Server server = Server.getInstance(port);
+	    System.out.println("Started Server running on "+server.getInetAddress()+":"+port+".");
 	    System.out.println("Press enter to exit the server.");
 	    Scanner sc = new Scanner(System.in);
 	    sc.nextLine();
