@@ -56,7 +56,9 @@ public class Client {
 	    while( client.isRunning() ) {
 		System.out.println("Please enter a message you want to send to the server.");
 		String message = sc.nextLine();
-		client.sendToServer(message + '\n');
+		if (client.isRunning()) {
+		    client.sendToServer(message + '\n');
+		}
 	    }
 	} catch (Exception e) {
 	    System.err.println("Could not send message to server. Shutting down client.");

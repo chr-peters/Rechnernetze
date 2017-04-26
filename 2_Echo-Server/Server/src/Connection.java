@@ -47,11 +47,11 @@ public class Connection extends Thread{
 	} else if(message.equals("\\showallstat")){
 	    Map<String, Statistik> statmap = Server.getInstance().getAllStats();
 	    this.sendToClient(statmap.toString());
+	} else if(message.startsWith("/broadc")){
+	    Server.getInstance().broadcast(message.replaceFirst("/broadc", "").trim());
 	} else if(message.endsWith("\\exit")) {
 	    this.sendToClient(message);
 	    this.close();
-	} else if(message.startsWith("/broadc")){
-	    Server.getInstance().broadcast(message.replaceFirst("/broadc", "").trim());
 	} else {
 	    this.sendToClient(message);
 	}
