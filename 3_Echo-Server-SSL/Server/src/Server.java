@@ -8,6 +8,7 @@ import java.io.IOException;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import javax.net.ssl.SSLServerSocketFactory;
 
 public class Server {
     private List<Connection> connections;
@@ -18,8 +19,12 @@ public class Server {
     private static final int STANDARD_PORT = 12345;
 
     private Server(int port) throws IOException{
+	//Setup keystore
+	System.setProperty("javax.net.ssl.keyStore", "/home/rn077970/Rechnernetze/3_Echo-Server-SSL/Server/data/rn-ssl.jks");
+	System.setProperty("javax.net.ssl.keyStorePassword", "geheim");
+	
 	connections = new LinkedList<Connection>();
-	serverSocket = new ServerSocket(port);
+	serverSocket = SSLServerSocketFactory.getDefault().createServerSocket(port);
 	isRunning = true;
 	
 	//listen for clients

@@ -1,6 +1,8 @@
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import javax.net.ssl.SSLSocketFactory;
+
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -17,7 +19,12 @@ public class Client {
     private BufferedWriter outToServer;
 
     public Client(String address, int port) throws IOException{
-	this.serverSocket = new Socket(address, port);
+
+	//setup truststore
+	System.setProperty("javax.net.ssl.trustStore", "data/truststore.jks");
+	System.setProperty("javax.net.ssl.trustStorePassword", "geheim");
+
+	this.serverSocket = SSLSocketFactory.getDefault().createSocket(address, port);
 	this.serverListener = new ServerListener(this.serverSocket, this);
 
 	outToServer = new BufferedWriter(new OutputStreamWriter(serverSocket.getOutputStream()));
