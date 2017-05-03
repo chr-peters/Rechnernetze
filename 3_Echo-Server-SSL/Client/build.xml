@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<project name="Echo-Client" default="compile">
+
+  <property name="address" value="localhost" />
+  <property name="port" value="9876" />
+  
+  <target name="init" >
+    <mkdir dir="build" />
+  </target>
+
+  <target name="compile" depends="init" >
+    <javac srcdir="src" destdir="build" includeAntRuntime="false"
+	   debug="true" debuglevel="lines,vars,source" />
+  </target>
+
+  <target name="execute" depends="compile">
+    <java classname="Client" classpath="build">
+      <arg value="${address}" />
+      <arg value="${port}" />
+    </java>
+  </target>
+
+  <target name="clean" depends="init">
+    <delete dir="build" />
+  </target>
+</project>
