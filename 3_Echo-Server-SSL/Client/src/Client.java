@@ -22,7 +22,7 @@ public class Client {
 
 	//setup truststore
 	System.setProperty("javax.net.ssl.trustStore", "data/truststore.jks");
-	System.setProperty("javax.net.ssl.trustStorePassword", "geheim");
+	System.setProperty("javax.net.ssl.trustStorePassword", "LvU1t}d.db(RLK/F");
 
 	this.serverSocket = SSLSocketFactory.getDefault().createSocket(address, port);
 	this.serverListener = new ServerListener(this.serverSocket, this);

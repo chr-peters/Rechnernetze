@@ -20,8 +20,9 @@ public class Server {
 
     private Server(int port) throws IOException{
 	//Setup keystore
-	System.setProperty("javax.net.ssl.keyStore", "/home/rn077970/Rechnernetze/3_Echo-Server-SSL/Server/data/rn-ssl.jks");
-	System.setProperty("javax.net.ssl.keyStorePassword", "geheim");
+	System.setProperty("javax.net.ssl.keyStore", "data/rn-ssl.jks");
+	//System.setProperty("javax.net.ssl.keyStorePassword", "geheim");
+	System.setProperty("javax.net.ssl.keyStorePassword", "LvU1t}d.db(RLK/F");
 	
 	connections = new LinkedList<Connection>();
 	serverSocket = SSLServerSocketFactory.getDefault().createServerSocket(port);
