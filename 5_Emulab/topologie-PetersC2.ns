@@ -1,0 +1,22 @@
+#start the simulator
+set ns [new Simulator]
+source tb_compat.tcl
+
+#define the nodes
+set node1 [$ns node]
+set node2 [$ns node]
+set node3 [$ns node]
+
+#setup the lan
+set lan0 [$ns make-lan "$node1 $node2 $node3 " 100Mb 0ms]
+
+#set the operating system for each node
+tb-set-node-os $node1 UBUNTU16-64-STD
+tb-set-node-os $node2 UBUNTU16-64-STD
+tb-set-node-os $node3 UBUNTU16-64-STD
+
+#enable static routing
+$ns rtproto Static
+
+#run the simulator
+$ns run
