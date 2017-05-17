@@ -1,0 +1,5 @@
+clean
+compile
+execute-client
+execute-server
+init
