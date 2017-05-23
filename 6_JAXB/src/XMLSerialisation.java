@@ -30,14 +30,7 @@ public class XMLSerialisation {
 
       // configurate the environment
       this.of = new ObjectFactory();
-      System.out.println(System.getProperty("java.class.path"));
-      try {
-	  this.jc = JAXBContext.newInstance(EchoMessage.class);
-      } catch (Exception e) {
-	  System.out.println("+++++++++++++++++++++++++HALLO+++++++++++");
-	  e.printStackTrace();
-	  System.out.println("+++++++++++++++++++++++++HALLO+++++++++++");
-      }
+      this.jc = JAXBContext.newInstance(EchoMessage.class);
       this.marshaller = jc.createMarshaller();
       this.unmarshaller = jc.createUnmarshaller();
       marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);

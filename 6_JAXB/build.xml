@@ -1,20 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <project name="JAXB" default="compile">
+
+  <path id="project.class.path">
+    <pathelement path="${java.class.path}" />
+    <pathelement location="build" />
+  </path>
+  
   <target name="init" >
     <mkdir dir="build" />
   </target>
 
   <target name="compile" depends="init" >
-    <javac srcdir="src" destdir="build" includeAntRuntime="false" />
+    <javac classpathref="project.class.path" srcdir="src" destdir="build"
+	   includeAntRuntime="false" />
   </target>
 
   <target name="execute-server" depends="compile">
-    <java classname="Server" classpath="build" />
+    <java fork="true" classpathref="project.class.path" classname="Server" />
   </target>
 
   <target name="execute-client" depends="compile">
-    <java classname="Client" classpath="build" />
+    <java fork="true" classpathref="project.class.path" classname="Client" />
   </target>
 
   <target name="clean" depends="init">
