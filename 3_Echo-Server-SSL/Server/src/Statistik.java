@@ -25,7 +25,7 @@ public class Statistik {
     }
 
     public String toString() {
-	return "Shortest message: " + shortest + "\nLongest message: " + longest +
-	    "\nMessage count: " + count + "\nAggregate Size: " + aggregateSize;
+	return "Shortest message: " + shortest + ", Longest message: " + longest +
+	    ", Message count: " + count + ", Aggregate Size: " + aggregateSize;
     }
 }

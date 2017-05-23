@@ -2,6 +2,8 @@ import java.net.Socket;
 
 import java.io.*;
 
+import javax.xml.bind.JAXBException;
+
 //TODO clean up unused imports
 
 public class ServerListener extends Thread {
@@ -11,9 +13,12 @@ public class ServerListener extends Thread {
 
     private BufferedReader inFromServer;
 
-    public ServerListener(Socket socket, Client client) throws IOException {
+    XMLSerialisation serializer;
+
+    public ServerListener(Socket socket, Client client) throws IOException, JAXBException {
 	this.serverSocket = socket;
 	this.client = client;
+	this.serializer = new XMLSerialisation(socket.getLocalAddress().getHostName());
 
 	inFromServer = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
     }
@@ -27,15 +32,16 @@ public class ServerListener extends Thread {
 		    this.processReceivedMessage(message);
 		}
 	    }
-	} catch (IOException e) {
+	} catch (IOException | JAXBException e) {
 	    System.err.println("Could not retrieve message from server.");
 	    e.printStackTrace();
 	}
     }
 
-    public void processReceivedMessage(String message) throws IOException{
-	System.out.println("Message from Server: "+message);
-	if (message.endsWith("\\exit")) {
+    public void processReceivedMessage(String message) throws IOException, JAXBException{
+	EchoMessage curMessage = serializer.xmlStringToMessage(message);
+	System.out.println("Message from Server: "+curMessage.getContent());
+	if (curMessage.getType() == EchoMessageType.EXIT) {
 	    this.client.disconnect();
 	}
     }

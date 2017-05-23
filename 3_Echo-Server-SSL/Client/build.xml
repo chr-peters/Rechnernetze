@@ -15,7 +15,7 @@
   </target>
 
   <target name="execute" depends="compile">
-    <java classname="Client" classpath="build">
+    <java fork="true" classname="Client" classpath="build">
       <arg value="${address}" />
       <arg value="${port}" />
     </java>

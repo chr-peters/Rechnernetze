@@ -10,6 +10,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import javax.net.ssl.SSLServerSocketFactory;
 
+import javax.xml.bind.JAXBException;
+
 public class Server {
     private List<Connection> connections;
     private boolean isRunning;
@@ -18,7 +20,7 @@ public class Server {
     private static Server instance;
     private static final int STANDARD_PORT = 12345;
 
-    private Server(int port) throws IOException{
+    private Server(int port) throws IOException, JAXBException{
 	//Setup keystore
 	System.setProperty("javax.net.ssl.keyStore", "data/rn-ssl.jks");
 	//System.setProperty("javax.net.ssl.keyStorePassword", "geheim");
@@ -38,7 +40,7 @@ public class Server {
 			Connection conn = new Connection(clientSocket);
 			conn.start();
 			connections.add(conn);
-		    } catch (IOException e) {
+		    } catch (IOException | JAXBException e) {
 			e.printStackTrace();
 		    }
 		}
@@ -50,7 +52,7 @@ public class Server {
 	for(Connection c: this.connections) {
 	    try {
 		c.sendToClient(message);
-	    } catch (IOException e) {
+	    } catch (IOException | JAXBException e) {
 		e.printStackTrace();
 	    }
 	}
@@ -77,7 +79,7 @@ public class Server {
 	return res;
     }
 
-    public static Server getInstance(int port) throws IOException {
+    public static Server getInstance(int port) throws IOException, JAXBException {
 	if (instance == null) {
 	    instance = new Server(port);
 	    return instance;
@@ -86,7 +88,7 @@ public class Server {
 	}
     }
 
-    public static Server getInstance() throws IOException {
+    public static Server getInstance() throws IOException, JAXBException {
 	if (instance == null) {
 	    instance = new Server(STANDARD_PORT);
 	    return instance;
@@ -107,11 +109,10 @@ public class Server {
 	    }
 	    Server server = Server.getInstance(port);
 	    System.out.println("Started Server running on "+server.getInetAddress()+":"+port+".");
-	    System.out.println("Press enter to exit the server.");
 	    Scanner sc = new Scanner(System.in);
 	    sc.nextLine();
 	}
-	catch (IOException e) {
+	catch (IOException | JAXBException e) {
 	    System.err.println("Could not start the server!");
 	}
     }

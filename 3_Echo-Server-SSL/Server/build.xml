@@ -13,7 +13,7 @@
   </target>
 
   <target name="execute" depends="compile">
-    <java classname="Server" classpath="build">
+    <java fork="true" classname="Server" classpath="build">
       <arg value="${port}" />
     </java>
   </target>

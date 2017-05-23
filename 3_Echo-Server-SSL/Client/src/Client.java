@@ -8,6 +8,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import java.io.*;
 
+import javax.xml.bind.JAXBException;
+
 //TODO clean up imports
 
 public class Client {
@@ -16,9 +18,11 @@ public class Client {
     private Socket serverSocket;
     private AtomicBoolean running;
 
+    XMLSerialisation serializer;
+
     private BufferedWriter outToServer;
 
-    public Client(String address, int port) throws IOException{
+    public Client(String address, int port) throws IOException, JAXBException{
 
 	//setup truststore
 	System.setProperty("javax.net.ssl.trustStore", "data/truststore.jks");
@@ -28,13 +32,16 @@ public class Client {
 	this.serverListener = new ServerListener(this.serverSocket, this);
 
 	outToServer = new BufferedWriter(new OutputStreamWriter(serverSocket.getOutputStream()));
+
+	serializer = new XMLSerialisation(serverSocket.getLocalAddress().getHostName());
 	
 	this.running = new AtomicBoolean(true);
 	this.serverListener.start();
     }
 
-    public void sendToServer(String message) throws IOException{
-	outToServer.write(message);
+    public void sendToServer(String message) throws IOException, JAXBException{
+	EchoMessage curMessage = createMessage(message);
+	outToServer.write(serializer.messageToXMLString(curMessage)+'\n');
 	outToServer.flush();
     }
 
@@ -47,6 +54,26 @@ public class Client {
 	return this.running.get();
     }
 
+    public EchoMessage createMessage(String message) throws JAXBException{
+	EchoMessageType messageType;
+	message.trim();
+	if (message.equals("\\showstat")){
+	    messageType = EchoMessageType.SHOWSTAT;
+	} else if(message.equals("\\showallstat")){
+	    messageType = EchoMessageType.SHOWALLSTAT;
+	} else if(message.startsWith("/broadc")){
+	    messageType = EchoMessageType.BROADCAST;
+	} else if(message.endsWith("\\exit")) {
+	    messageType = EchoMessageType.EXIT;
+	} else {
+	    messageType = EchoMessageType.DEFAULT;
+	}
+	EchoMessage curMessage = serializer.getNewMessage();
+	curMessage.setType(messageType);
+	curMessage.setContent(message);
+	return curMessage;
+    }
+
     public static void main (String args[]) {
 	if(args.length < 2) {
 	    System.err.println("You have to specify an address and a port!");
@@ -55,8 +82,9 @@ public class Client {
 	Client client;
 	try {
 	    client = new Client(args[0], Integer.parseInt(args[1]));
-	} catch (IOException  e) {
+	} catch (IOException | JAXBException  e) {
 	    System.err.println("Could not connect to server.");
+	    e.printStackTrace();
 	    return;
 	}
 	try (Scanner sc = new Scanner(System.in)) {
@@ -64,7 +92,7 @@ public class Client {
 		System.out.println("Please enter a message you want to send to the server.");
 		String message = sc.nextLine();
 		if (client.isRunning()) {
-		    client.sendToServer(message + '\n');
+		    client.sendToServer(message);
 		}
 	    }
 	} catch (Exception e) {
