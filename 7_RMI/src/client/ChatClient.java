@@ -234,7 +234,16 @@ public class ChatClient extends JFrame implements ChatClientCallbackInterface {
 	    String message = inputField.getText();
 	    if (message.length() > 0) {
 		try {
-		    serverObject.chat(userName, message);
+		    if(message.startsWith("/pn")) {
+			String parts[] = message.split("\\s+", 3);
+			if (parts.length >= 3) {
+			    // if less then 3 parts are provided,
+			    // not enough information is given
+			    serverObject.privateMessage(userName, parts[1], parts[2]);
+			}
+		    } else {
+			serverObject.chat(userName, message);
+		    }
 		} catch (Exception ex) {
 		    ex.printStackTrace();
 		}

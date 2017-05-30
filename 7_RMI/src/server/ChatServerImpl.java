@@ -23,7 +23,6 @@ public class ChatServerImpl extends UnicastRemoteObject implements ChatServerInt
 	super();
 	HashMap<String, ChatClientCallbackInterface> callbackHashMap = new HashMap<>();
 	users = Collections.synchronizedMap(callbackHashMap);
-	System.out.println("Constructor finished.");
     }
 
     public boolean login(String userID, ChatClientCallbackInterface receiver) throws RemoteException {
@@ -55,10 +54,21 @@ public class ChatServerImpl extends UnicastRemoteObject implements ChatServerInt
 	}
     }
 
+    public void privateMessage(String senderID, String receiverID, String message) throws RemoteException {
+	// do not allow chatting when not logged in
+	if(!users.keySet().contains(senderID)) {
+	    return;
+	}
+	// no receiver found
+	if(!users.keySet().contains(receiverID)) {
+	    return;
+	}
+	users.get(receiverID).receiveChat(senderID, message);
+    }
+
     public static void main(String[] args) {
 	try {
 	    LocateRegistry.createRegistry(registryPort);
-	    System.out.println("LocateRegistry finished.");
 	    Naming.bind("rmi://localhost/chat_server", new ChatServerImpl());
 	    System.out.println("ChatServer ready");
 	} catch (Exception ex) {
