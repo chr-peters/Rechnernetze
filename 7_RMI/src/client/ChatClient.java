@@ -143,7 +143,8 @@ public class ChatClient extends JFrame implements ChatClientCallbackInterface {
      * Benutzer gibt
      */
     public void receiveUserLogin(String userID, Object[] users) throws RemoteException {
-	// TODO
+	// add userID to the text of userList
+	userList.append(userID);
     }
 
     /**
