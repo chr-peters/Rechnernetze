@@ -27,6 +27,10 @@ public class ChatServerImpl extends UnicastRemoteObject implements ChatServerInt
     }
 
     public boolean login(String userID, ChatClientCallbackInterface receiver) throws RemoteException {
+	// user with the same name already exists
+	if(users.keySet().contains(userID)) {
+	    return false;
+	}
 	users.put(userID, receiver);
 	for(Map.Entry<String, ChatClientCallbackInterface> curUser: users.entrySet()) {
 	    curUser.getValue().receiveUserLogin(userID, users.keySet().toArray());
@@ -42,6 +46,10 @@ public class ChatServerImpl extends UnicastRemoteObject implements ChatServerInt
     }
 
     public void chat(String userID, String message) throws RemoteException {
+	// do not allow chatting when not logged in
+	if(!users.keySet().contains(userID)) {
+	    return;
+	}
 	for(Map.Entry<String, ChatClientCallbackInterface> curUser: users.entrySet()) {
 	    curUser.getValue().receiveChat(userID, message);
 	}

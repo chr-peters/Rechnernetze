@@ -135,7 +135,8 @@ public class ChatClient extends JFrame implements ChatClientCallbackInterface {
      * verschickt
      */
     public void receiveChat(String userID, String message) throws RemoteException {
-	// TODO
+	// update textArea
+	textArea.append(userID+": "+message+'\n');
     }
 
     /**
@@ -143,8 +144,11 @@ public class ChatClient extends JFrame implements ChatClientCallbackInterface {
      * Benutzer gibt
      */
     public void receiveUserLogin(String userID, Object[] users) throws RemoteException {
-	// add userID to the text of userList
-	userList.append(userID);
+	// update userList
+	userList.setText("");
+	for (Object user: users) {
+	    userList.append((String)user+'\n');
+	}
     }
 
     /**
@@ -152,7 +156,8 @@ public class ChatClient extends JFrame implements ChatClientCallbackInterface {
      * System verlaesst
      */
     public void receiveUserLogout(String userID, Object[] users) throws RemoteException {
-	// TODO
+	// refresh the userList
+	userList.setText(userList.getText().replace(userID+'\n', ""));
     }
 
     public static void main(String[] args) {
@@ -229,7 +234,7 @@ public class ChatClient extends JFrame implements ChatClientCallbackInterface {
 	    String message = inputField.getText();
 	    if (message.length() > 0) {
 		try {
-		    // TODO
+		    serverObject.chat(userName, message);
 		} catch (Exception ex) {
 		    ex.printStackTrace();
 		}
